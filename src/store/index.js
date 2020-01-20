@@ -10,12 +10,14 @@ export default new Vuex.Store({
     presets: [],
     suggestion: 0,
     currencies: [],
+    donate: {},
   },
 
   getters: {
     presets: state => state.presets,
     suggestion: state => state.suggestion,
     currencies: state => state.currencies,
+    donate: state => state.donate,
   },
 
   mutations: {
@@ -24,18 +26,9 @@ export default new Vuex.Store({
       state.suggestion = payload.suggestion || state.suggestion;
       state.currencies = payload.currencies || state.currencies;
     },
-    /*SET_CURRENCIES: (state, payload) => {
-      state.currencies = payload.currencies || state.currencies;
+    SET_DONATE: (state, payload) => {
+      state.donate = payload.donate || state.donate;
     },
-    SET_RATES: (state, payload) => {
-      state.rates = payload.rates || state.rates;
-    },
-    SET_ALL_WALLETS: (state, payload) => {
-      state.wallets = payload.wallets || state.wallets;
-    },
-    SET_HISTORY: (state, payload) => {
-      state.history = payload.history || state.history;
-    },*/
   },
 
   actions: {
@@ -44,6 +37,12 @@ export default new Vuex.Store({
       const response = await request('/settings');
       await commit('SET_SETTINGS', response);
       console.log('[Settings] response: ', JSON.stringify(response));
+    },
+    SendDonate: async ({ commit }, payload) => {
+      console.log('[Donate]');
+      const response = await request('/donate', payload);
+      await commit('SET_DONATE', response);
+      console.log('[Donate] response: ', JSON.stringify(response));
     },
 
     /*Currencies: async ({ commit }) => {

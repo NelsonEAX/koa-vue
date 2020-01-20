@@ -18,7 +18,7 @@ const request = async (url, data) => {
     });
 
     console.log('[request] response', response);
-    if (200 < response.status && response.status >= 300 ) return {};
+    // if (200 < response.status && response.status >= 300 ) return {};
 
     const json = await response.json();
     console.log('[request] json', json);

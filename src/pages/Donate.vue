@@ -26,14 +26,53 @@
         label="amount"
         :value="suggestion"
         prefix="$"
+        suffix="USD"
         append-icon="mdi-menu-down"
         @click:append="toggleCurrencies"
       ></v-text-field>
+      <v-menu
+        v-model="showMenu"
+        absolute
+      >
+        <v-list>
+          <v-list-item
+            v-for="(currency, index) in currencies"
+            :key="index"
+            @click=""
+          >
+            <v-list-item-title>{{ currency.name }}</v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-menu>
     </v-card-text>
 
     <v-card-actions>
-      <v-btn block color="primary">DONATE</v-btn>
+      <v-btn
+        block
+        color="primary"
+        @click="sendDonate"
+      >DONATE</v-btn>
     </v-card-actions>
+
+    <v-dialog
+            hide-overlay
+            persistent
+            width="300"
+    >
+      <v-card
+              color="primary"
+              dark
+      >
+        <v-card-text>
+          Please stand by
+          <v-progress-linear
+                  indeterminate
+                  color="white"
+                  class="mb-0"
+          ></v-progress-linear>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
   </v-card>
 </template>
 
@@ -42,12 +81,15 @@ import { mapGetters } from 'vuex';
 
 export default {
   name: 'Donate',
-  data: () => ({}),
+  data: () => ({
+    showMenu: true
+  }),
   computed: {
     ...mapGetters([
       'presets',
       'suggestion',
       'currencies',
+      'donate',
     ]),
     toggleNavbarIcon() {
       return this.navbarShow ? 'mdi-format-indent-decrease' : 'mdi-format-indent-increase';
@@ -56,9 +98,10 @@ export default {
   methods: {
     toggleCurrencies() {
       console.log('toggle');
+      this.showMenu = !this.showMenu;
     },
-    toggleNavbar() {
-      this.$store.dispatch('NavbarToggle');
+    sendDonate() {
+      this.$store.dispatch('SendDonate', {amount: 40, currency: 'USD'});
     },
   },
 }
