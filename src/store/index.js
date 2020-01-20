@@ -20,7 +20,9 @@ export default new Vuex.Store({
 
   mutations: {
     SET_SETTINGS: (state, payload) => {
-      state.settings = payload.settings || state.settings;
+      state.presets = payload.presets || state.presets;
+      state.suggestion = payload.suggestion || state.suggestion;
+      state.currencies = payload.currencies || state.currencies;
     },
     /*SET_CURRENCIES: (state, payload) => {
       state.currencies = payload.currencies || state.currencies;
