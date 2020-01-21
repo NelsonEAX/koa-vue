@@ -11,14 +11,14 @@ router
             .find({'currencies.code': body.currency || ''}).toArray();
 
         if (currency.length && body.amount > 0) {
-            console.log('currency exist', {amount: body.amount, currency: body.currency});
+            console.log('donate allow', {amount: body.amount, currency: body.currency});
             await ctx.db.collection('donations')
-                .insertOne({amount: body.amount, currency: body.currency});
+                .insertOne({amount: parseInt(body.amount, 10), currency: body.currency});
             ctx.status = 201;
             ctx.body = { "ok": true }
         } else {
-            console.log('currency NOT exist');
-            ctx.status = 400;
+            console.log('donate NOT allow');
+            ctx.status = 200;
             ctx.body = { "ok": false }
         }
     })
