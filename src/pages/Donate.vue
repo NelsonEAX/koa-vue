@@ -84,7 +84,12 @@ export default {
     donatePosible: true,
     donateOk: false,
     amount: 1,
+    amountEdited: false,
   }),
+  created() {
+      this.$store.dispatch('Settings')
+          .then(() => { this.amount = this.suggestion });;
+  },
   watch: {
     amount: function (newAmount) {
       if (newAmount) {
@@ -111,7 +116,6 @@ export default {
       })
     },
     presetsFormatValue() {
-      // {{changedCurrency.symbol}}{{preset}}
       return this.presets.map(preset => {
         let symbol = this.changedCurrency.symbol;
         let result = this.stepCeil(preset * this.changedCurrency.rate);
@@ -144,20 +148,26 @@ export default {
         result = result * this.currencies[index].rate;
       }
 
-      this.amount = Math.round(result) || 1;
+      if(this.amountEdited) {
+        this.amount = Math.round(result) || 1;
+      } else {
+        this.amount = this.stepCeil(result) || 1;
+      }
     },
     restrictChars($event) {
+      this.amountEdited = true;
       // Edit value
-      if ( (48 <= event.keyCode && event.keyCode <= 57) || event.keyCode === 8) return;
+      if ( (48 <= $event.keyCode && $event.keyCode <= 57) || $event.keyCode === 8) return;
 
       // Send donate
-      if (event.keyCode === 13) return this.sendDonate();
+      if ($event.keyCode === 13) return this.sendDonate();
 
       $event.preventDefault();
     },
     stepCeil(suggestion) {
       let step = 1;
-      if(suggestion < 150) step = 30;
+      if(suggestion < 80) step = 20;
+      else if(suggestion < 150) step = 30;
       else if(suggestion < 500) step = 50;
       else if(suggestion < 1000) step = 100;
       else if(suggestion < 2500) step = 500;
@@ -169,11 +179,14 @@ export default {
       return Math.ceil(suggestion/step)*step;
     },
     setAmountFromSuggestion(suggestion) {
+      this.amountEdited = false;
       this.amount = suggestion;
     },
     sendDonate() {
-      this.$store.dispatch('SendDonate', {amount: parseInt(this.amount, 10), currency: this.changedCurrency.code})
-              .then(() => { this.donateOk = this.donateResult });
+      this.$store.dispatch('SendDonate', {
+          amount: parseInt(this.amount, 10),
+          currency: this.changedCurrency.code
+      }).then(() => { this.donateOk = this.donateResult });
     },
   },
 }

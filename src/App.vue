@@ -32,8 +32,5 @@ export default {
   props: {},
   components: {},
   data: () => ({}),
-  created() {
-    this.$store.dispatch('Settings');
-  },
 };
 </script>
