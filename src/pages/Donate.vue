@@ -118,7 +118,12 @@ export default {
     presetsFormatValue() {
       return this.presets.map(preset => {
         let symbol = this.changedCurrency.symbol;
-        let result = this.stepCeil(preset * this.changedCurrency.rate);
+        let result = this.stepCeil(preset * this.changedCurrency.rate).toString();
+
+        if (result.length > 3) {
+          result = `${result.slice(0, -3)},${result.slice(-3)}`;
+        }
+
         return `${symbol}${result}`;
       })
     },
